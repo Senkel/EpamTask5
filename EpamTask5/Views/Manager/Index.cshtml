@@ -1,0 +1,25 @@
+﻿@model IEnumerable<EpamTask5.Models.Manager>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.Title = "Index";
+}
+
+<script type="text/javascript">
+    var onManagerListLoad = function () {
+        $.get('@Url.Action("ManagerList", "Manager")', null,
+            function (data, textStatus, jqXHR) {
+                $("#managerList").html(data);
+            });
+    }
+
+    $(document).ready(function (events)
+    {
+
+        onManagerListLoad();
+
+    });
+
+</script>
+
+

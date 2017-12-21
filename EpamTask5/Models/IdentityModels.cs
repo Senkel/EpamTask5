@@ -29,5 +29,7 @@ namespace EpamTask5.Models
         {
             return new ApplicationDbContext();
         }
+
+        public System.Data.Entity.DbSet<EpamTask5.Models.Manager> Managers { get; set; }
     }
 }
