@@ -1,0 +1,138 @@
+﻿@model EpamTask5.Models.Product
+@{
+    ViewBag.Title = "Product Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div>
+    <h4>Product</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Title)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Title)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
+<div class="well">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Date from: <input class="span2" value="" id="dpd1" type="text"></th>
+                <th>Date to: <input class="span2" value="" id="dpd2" type="text"></th>
+            </tr>
+        </thead>
+    </table>
+</div>
+<div id="ManagersLineChartAll" style="width: 700px; height: 500px;"></div>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script type="text/javascript">
+
+    $(document)
+        .ready(
+            function() {
+                google.charts.load('current', { 'packages': ['corechart'] });
+
+                google.charts.setOnLoadCallback(drawManagersLineChart);
+            });
+
+    function drawManagersLineChart() {
+        console.log(dateFrom.dateFrom);
+        $('#ManagersLineChartAll').html(null);
+        var data = new google.visualization.DataTable();
+        //data.addColumn('string', 'Manager');
+        //data.addColumn('number', 'Totall sum');
+
+        var chart = new google.visualization.LineChart(document.getElementById('ManagersLineChartAll'));
+
+        var from = dateFrom.date.getDate() + " " + dateFrom.date.getMonth() + " " + dateFrom.date.getFullYear();
+        var to = dateTo.date.getDate() + " " + dateTo.date.getMonth() + " " + dateTo.date.getFullYear();
+
+        var options = {
+            title: 'The sum of sales for the period (' + from + ' -- ' + to + ').'
+        };
+
+        $.get('@Url.Action("GetLineChartDataProduct", "Manager")',
+            { from: from, to: to, id: @Model.Id },
+            function(dataJson, textStatus, jqXHR) {
+
+                var indexOfHeader = function(managers, header, value) {
+                    for (var i = 0; i < header.length; i++) {
+                        if (header[i][1] === managers[value]) {
+                            return i;
+                        }
+                    }
+                    return -1;
+                }
+
+                console.log(dataJson);
+
+                var chartData = [];
+
+                var headers = [];
+                headers[0] = ['datetime', 'Date'];
+                $.each(dataJson.managers,
+                    function(key, val) {
+                        headers.push(['number', val]);
+                    });
+
+                $.each(dataJson.sales,
+                    function(key, val) {
+                        var itemData = Array.apply(null, new Array(headers.length)).map(Number.prototype.valueOf, 0);
+                        var dt = parseInt(val.date.substr(6));
+                        itemData[0] = new Date(dt);
+
+                        $.each(val.managersSales,
+                            function(k, v) {
+
+                                var indexOfManager = indexOfHeader(dataJson.managers, headers, k);
+
+                                itemData[indexOfManager] = v;
+                            });
+                        chartData.push(itemData);
+                    });
+
+                console.log(chartData);
+                //data.addColumn('string', 'Manager');
+
+                $.each(headers,
+                    function(key, val) {
+                        data.addColumn(val[0], val[1]);
+                    });
+
+                data.addRows(chartData);
+                chart.draw(data, options);
+            });
+    }
+</script>
+<script type="text/javascript">
+   var dateFrom = $('#dpd1').datepicker({
+        onRender: function (date) {
+            return '';
+        }
+    }).on('changeDate', function (ev) {
+        if (ev.date.valueOf() > dateTo.date.valueOf()) {
+            var newDate = new Date(ev.date);
+            newDate.setDate(newDate.getDate() + 1);
+            dateTo.setValue(newDate);
+        }
+        dateFrom.hide();
+        $('#dpd2')[0].focus();
+    }).data('datepicker');
+
+   var dateTo = $('#dpd2').datepicker({
+        onRender: function (date) {
+            return date.valueOf() <= dateFrom.date.valueOf() ? 'disabled' : '';
+        }
+    }).on('changeDate', function (ev) {
+        dateTo.hide();
+        drawManagersLineChart();
+    }).data('datepicker');
+</script>

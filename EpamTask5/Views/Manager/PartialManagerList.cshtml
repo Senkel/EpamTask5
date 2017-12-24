@@ -1,0 +1,108 @@
+﻿    
+@model IEnumerable<EpamTask5.Models.Manager>
+@if (User.Identity.IsAuthenticated && User.IsInRole("Administrator"))
+{
+    <p>
+        <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#ManagerInfo" onclick="onManagerCreate()">Create New</button>
+    </p>
+}
+<table class="table table-hover">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th></th>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                <div onclick="onManagerDetails(@item.Id);">
+                    @Html.DisplayFor(modelItem => item.Name)
+                </div>
+            </td>
+            <td>
+                @if (User.Identity.IsAuthenticated && User.IsInRole("Administrator"))
+                {
+                    @Html.ActionLink("Delete", "Delete", new { id = item.Id }, new { @class = "delete", id = item.Id })
+                }
+            </td>
+        </tr>
+    }
+</table>
+<script type="text/javascript">
+
+    $(".delete").click(function (event) {
+        event.preventDefault();
+        onManagerDelete($(this).attr("id"));
+    });
+
+    onManagerFormSubmit = function() {
+        $("#ManagerInfo form").submit();
+    };
+
+    showManagerDetails = function () {
+        $("#ManagerInfo").modal('show');
+    }
+
+    hideManagerDetails = function () {
+        $("#ManagerInfo").modal('hide');
+        $("#managerDetails").html(null);
+    }
+
+    onManagerDetails = function (managerId) {
+        @if (User.Identity.IsAuthenticated && User.IsInRole("Administrator"))
+        {
+             @:$("#ManagerInfoLabel").html("Edit Manager Details");
+            @:$("#ManagerInfoSubmit").html("Save changes");
+            @:$("#ManagerInfoSubmit").val("Edit");
+            @:showManagerDetails();
+            @:$.get('@Url.Action("Edit", "Manager")',
+            @:{ id: managerId },
+            @:function (data, textStatus, XHR) {
+                @:$("#managerDetails").html(data);
+            @:});
+        }
+        else if (User.Identity.IsAuthenticated)
+        {
+            @:$("#ManagerInfoLabel").html("Manager Details");
+            @:showManagerDetails();
+            @:$.get('@Url.Action("Details", "Manager")',
+            @:{ id: managerId },
+            @:function (data, textStatus, XHR) {
+                @:$("#managerDetails").html(data);
+            @:});
+        }
+    }
+
+    onManagerCreate = function () {
+        $("#managerDetails").html(null);
+        $("#ManagerInfoLabel").html("Create Manager");
+        $("#ManagerInfoSubmit").html("Save changes");
+        $("#ManagerInfoSubmit").val("Create");
+        showManagerDetails();
+
+        $.get('@Url.Action("Create", "Manager")',
+            null,
+            function (data, textStatus, XHR) {
+                $("#managerDetails").html(data);
+            });
+    }
+
+    onManagerDelete = function (managerId) {
+        $("#managerDetails").html(null);
+        $("#ManagerInfoLabel").html("Delete Manager");
+        $("#ManagerInfoSubmit").html("Delete");
+        $("#ManagerInfoSubmit").val("Delete");
+
+        showManagerDetails();
+        $.get('@Url.Action("Delete", "Manager")',
+            { id: managerId },
+            function (data, textStatus, XHR) {
+                $("#managerDetails").html(data);
+            });
+    }
+
+    $('#ManagerInfo').on('hide.bs.modal', function () { $("#managerDetails").html(null); });
+
+</script>

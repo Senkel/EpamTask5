@@ -14,7 +14,7 @@ namespace EpamTask5.Controllers
     [Authorize]
     public class ManagerController : Controller
     {
-       
+
 
         // GET: Manager
         [HttpGet]
@@ -33,7 +33,7 @@ namespace EpamTask5.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             var managerId = id ?? default(int);
-            var manager = new ManagerRepository().GetById(managerId).Select(x=> new Manager() { Id=x.Id,Name=x.ManagerName}).FirstOrDefault();
+            var manager = new ManagerRepository().GetById(managerId).Select(x => new Manager() { Id = x.Id, Name = x.ManagerName }).FirstOrDefault();
             if (manager == null)
             {
                 return HttpNotFound();
@@ -73,8 +73,8 @@ namespace EpamTask5.Controllers
         [HttpGet]
         public ActionResult ManagerList()
         {
-            var item = new ManagerRepository().GetAll().Select(x => new Manager() { Id = x.Id,Name = x.ManagerName});
-            return PartialView("_ManagerList",item);
+            var item = new ManagerRepository().GetAll().Select(x => new Manager() { Id = x.Id, Name = x.ManagerName });
+            return PartialView("PartialManagerList", item);
         }
 
         // GET: Manager/Edit/5
@@ -88,10 +88,10 @@ namespace EpamTask5.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
 
-            var managerId = id?? default(int);
+            var managerId = id ?? default(int);
 
             var manager = new ManagerRepository().GetById(managerId).Select(x => new Manager() { Id = x.Id, Name = x.ManagerName }).FirstOrDefault();
-            
+
             if (manager == null)
             {
                 return HttpNotFound();
@@ -121,8 +121,8 @@ namespace EpamTask5.Controllers
         }
 
         // GET: Manager/Delete/5
-        
-        [Authorize(Roles ="Administrator")]
+
+        [Authorize(Roles = "Administrator")]
         [HttpGet]
         public ActionResult Delete(int? id)
         {
@@ -134,7 +134,7 @@ namespace EpamTask5.Controllers
             var managerId = id ?? default(int);
 
             var manager = new ManagerRepository().GetById(managerId).Select(x => new Manager() { Id = x.Id, Name = x.ManagerName }).FirstOrDefault();
-            
+
             if (manager == null)
             {
                 return HttpNotFound();
@@ -144,7 +144,7 @@ namespace EpamTask5.Controllers
 
         // POST: Manager/Delete/5
         [HttpPost, ActionName("Delete")]
-        
+
         [Authorize(Roles = "Administrator")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
@@ -154,6 +154,35 @@ namespace EpamTask5.Controllers
             return RedirectToAction("Index");
         }
 
-       
+        [Ajax]
+        public JsonResult GetChartData(int? id)
+        {
+            if (id == null)
+            {
+                var items = new ManagerRepository()
+                    .GetAll()
+                    .Select(d => new object[]
+                    {
+                        d.ManagerName,
+                        new ManagerRepository()
+                        .GetSumById(d.Id)
+                    })
+                    .ToArray();
+
+                return Json(items, JsonRequestBehavior.AllowGet);
+            }
+
+            int idManager = id ?? default(int);
+            Random rnd = new Random();
+            var sales = new ManagerRepository()
+                .GetSalesByManagerId(idManager)
+                .OrderBy(x => x.SaleDate)
+                .GroupBy(x => x.SaleDate.Date)
+                .Select(d => new object[] { d.Key, d.Sum(s => s.Sum) })
+                .ToArray();
+
+            return Json(sales, JsonRequestBehavior.AllowGet);
+        }
     }
 }
+

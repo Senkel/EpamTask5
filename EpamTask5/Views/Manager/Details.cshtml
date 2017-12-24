@@ -1,34 +1,37 @@
 ﻿@model EpamTask5.Models.Manager
-
 @{
     Layout = null;
 }
-
-<!DOCTYPE html>
-
-<html>
-<head>
-    <meta name="viewport" content="width=device-width" />
-    <title>Details</title>
-</head>
-<body>
-    <div>
-        <h4>Manager</h4>
-        <hr />
+<div class="row">
+    <div class="col-md-12">
         <dl class="dl-horizontal">
             <dt>
                 @Html.DisplayNameFor(model => model.Name)
             </dt>
-    
+
             <dd>
                 @Html.DisplayFor(model => model.Name)
             </dd>
-    
         </dl>
     </div>
-    <p>
-        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-        @Html.ActionLink("Back to List", "Index")
-    </p>
-</body>
-</html>
+    <div id="ManagerLineChartAll" class="col-md-12" style="height: 500px;"></div>
+</div>
+<script type="text/javascript">
+    function load_page_data() {
+        $.get('@Url.Action("GetChartData", "Manager")',
+           {id: @Model.Id},
+           function (dataJSON, textStatus, jqXHR) {
+               $.each(dataJSON, function(key, val) {
+                   var dt = parseInt(val[0].substr(6));
+
+                   val[0] = new Date(dt);
+               });
+               setTimeout(function(){
+                   drawChart(dataJSON);
+               }, 1000);
+
+           });
+    }
+
+    load_page_data();
+</script>

@@ -10,7 +10,6 @@ namespace EpamTask5.Migrations
         public Configuration()
         {
             AutomaticMigrationsEnabled = false;
-            ContextKey = "EpamTask5.Models.ApplicationDbContext";
         }
 
         protected override void Seed(EpamTask5.Models.ApplicationDbContext context)

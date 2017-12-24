@@ -10,7 +10,7 @@ namespace EpamTask5.Models
     {
         [MaxLength(10, ErrorMessage = "Too many chars")]
         [StringLength(10, ErrorMessage = "Too many chars")]
-        public string Name { get; set; }
+        public string Title { get; set; }
 
         public int Id { get; set; }
     }
