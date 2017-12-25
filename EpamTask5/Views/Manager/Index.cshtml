@@ -26,9 +26,7 @@
     <div class="row">
         <div id="managerList" class="col-md-4"></div>
         <div class="col-md-8">
-            @*<div id="ManagersPieChartAll" style="width: 700px; height: 500px;"></div>
-           
-            <div id="ManagersLineChartAll" style="width: 700px; height: 500px;"></div>*@
+            <div id="ManagersPieChartAll" style="width: 700px; height: 500px;"></div>
         </div>
     </div>
 </section>
@@ -71,7 +69,7 @@
             data.addColumn('string', 'Manager');
             data.addColumn('number', 'Totall sum');
             var options = {
-                title: 'The sum of sales for the entire period.',
+                title: 'The sum of sales for the whole period.',
                 is3D: true
             };
             var chart = new google.visualization.PieChart(document.getElementById('ManagersPieChartAll'));
@@ -82,5 +80,6 @@
                     chart.draw(data, options);
                 });
         }
-    
+
+        
 </script>

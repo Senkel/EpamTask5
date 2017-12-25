@@ -173,7 +173,7 @@ namespace EpamTask5.Controllers
             }
 
             int idManager = id ?? default(int);
-            Random rnd = new Random();
+           
             var sales = new ManagerRepository()
                 .GetSalesByManagerId(idManager)
                 .OrderBy(x => x.SaleDate)
