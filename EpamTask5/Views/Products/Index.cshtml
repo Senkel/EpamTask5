@@ -3,13 +3,16 @@
     ViewBag.Title = "Product List";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+<h1>Products</h1>
+
 @if (User.Identity.IsAuthenticated && User.IsInRole("Administrator"))
 {
     <p>
-        @Html.ActionLink("Create New", "Create")
+        @Html.ActionLink("Create New", "Create", new object { }, new { @class = "btn btn-primary" })
     </p>
 }
-<div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+<div >
     @foreach (var item in Model)
     {
         <div class="panel panel-default">
@@ -20,34 +23,37 @@
                     </a>
                 </h4>
             </div>
-            <div id="collapse_@item.Key" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_@item.Key">
-                <div class="panel-body">
-                    @foreach (var product in item.Value)
-                    {
-                        <dl class="dl-horizontal">
-                            <dt>
-                                @Html.DisplayNameFor(Model => product.Title)
-                            </dt>
-                            <dd>
-                                @Html.DisplayFor(Model => product.Title)
-                            </dd>
+           
+                <div id="collapse_@item.Key" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading_@item.Key">
+                    <div class="panel-body">
 
-                            <dd>
-                                @Html.ActionLink("Details", "Details", new { id = product.Id })
-                            </dd>
-                            @if (User.Identity.IsAuthenticated && User.IsInRole("Administrator"))
-                            {
+                        @foreach (var product in item.Value)
+                        {
+                            <dl class="dl-horizontal">
+                                <dt>
+                                    @Html.DisplayNameFor(Model => product.Title)
+                                </dt>
                                 <dd>
-                                    @Html.ActionLink("Edit", "Edit", new { id = product.Id })
+                                    @Html.DisplayFor(Model => product.Title)
                                 </dd>
+
                                 <dd>
-                                    @Html.ActionLink("Delete", "Delete", new { id = product.Id })
+                                    @Html.ActionLink("Details", "Details", new { id = product.Id })
                                 </dd>
-                            }
-                        </dl>
-                    }
+                                @if (User.Identity.IsAuthenticated && User.IsInRole("Administrator"))
+                                {
+                                    <dd>
+                                        @Html.ActionLink("Edit", "Edit", new { id = product.Id })
+                                    </dd>
+                                    <dd>
+                                        @Html.ActionLink("Delete", "Delete", new { id = product.Id })
+                                    </dd>
+                                }
+                            </dl>
+                        }
+
+                    </div>
                 </div>
-            </div>
         </div>
     }
 </div>

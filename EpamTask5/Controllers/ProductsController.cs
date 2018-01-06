@@ -19,6 +19,7 @@ namespace Task_5.Controllers
         {
             var products = new ProductRepository()
                 .GetAll()
+                .OrderBy(a=>a.Title)
                 .GroupBy(p => p.Title.Substring(0, 1))
                 .Select(p => new { k = p.Key, value = p })
                 .ToDictionary(
@@ -27,6 +28,12 @@ namespace Task_5.Controllers
                         x => new EpamTask5.Models.Product()
                         { Id = x.Id, Title = x.Title }));
             return View(products);
+        }
+
+        [HttpGet]
+        public ActionResult Denied()
+        {
+            return View();
         }
 
         // GET: Products/Details/5
@@ -128,6 +135,7 @@ namespace Task_5.Controllers
 
         // GET: Products/Delete/5
         [Authorize(Roles = "Administrator")]
+        [HttpGet]
         public ActionResult Delete(int? id)
         {
             if (id == null)
@@ -153,12 +161,14 @@ namespace Task_5.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            var product = new ProductRepository()
+          
+                var product = new ProductRepository()
                 .GetById(id)
                 .FirstOrDefault();
 
-            new ProductRepository()
-                .Remove(product);
+                new ProductRepository()
+                    .Remove(product);
+           
 
             return RedirectToAction("Index");
         }

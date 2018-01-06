@@ -7,13 +7,13 @@ namespace EpamTask5.Migrations
     using System.Resources;
     
     [GeneratedCode("EntityFramework.Migrations", "6.1.3-40302")]
-    public sealed partial class MigrateDb : IMigrationMetadata
+    public sealed partial class MigrationDB : IMigrationMetadata
     {
-        private readonly ResourceManager Resources = new ResourceManager(typeof(MigrateDb));
+        private readonly ResourceManager Resources = new ResourceManager(typeof(MigrationDB));
         
         string IMigrationMetadata.Id
         {
-            get { return "201712231735240_MigrateDb"; }
+            get { return "201712301932209_MigrationDB"; }
         }
         
         string IMigrationMetadata.Source

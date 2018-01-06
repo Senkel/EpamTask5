@@ -12,7 +12,7 @@ namespace EpamTask5.Models
         public override bool IsValidForRequest(ControllerContext controllerContext, MethodInfo methodInfo)
         {
 
-            return controllerContext.RequestContext.HttpContext.Request.IsAjaxRequest();
+            return controllerContext.HttpContext.Request.IsAjaxRequest();
 
         }
     }

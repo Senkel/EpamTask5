@@ -22,3 +22,13 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.modal-body .navbar,
+.modal-body footer,
+.modal-body hr {
+    display: none;
+}
+html, body {
+background-color :darkgray
+}
+

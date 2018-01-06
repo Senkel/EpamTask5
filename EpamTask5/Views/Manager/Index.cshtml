@@ -1,5 +1,5 @@
 ﻿@{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Managers List";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -20,15 +20,15 @@
 
 </script>
 
-<h2>Managers</h2>
+<h1>Managers</h1>
 
-<section id="managerListSection">
-    <div class="row">
+<section id="managerListSection" style="background-color:darkgray">
+   
         <div id="managerList" class="col-md-4"></div>
-        <div class="col-md-8">
-            <div id="ManagersPieChartAll" style="width: 700px; height: 500px;"></div>
+        <div class="col-md-8" >
+            <div id="ManagersPieChartAll" style="background-color:darkgray"></div>
         </div>
-    </div>
+   
 </section>
 
 <!-- Modal -->
@@ -36,11 +36,11 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" aria-hidden="true">&times; </button>
                 <h4 class="modal-title" id="ManagerInfoLabel">Manager Details</h4>
             </div>
             <div class="modal-body" id="managerDetails">
-                
+
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -60,7 +60,6 @@
                 function() {
                     google.charts.load('current', { 'packages': ['corechart'] });
                     google.charts.setOnLoadCallback(drawManagersChart);
-                    google.charts.setOnLoadCallback(drawManagersLineChart);
                 });
 
         function drawManagersChart() {
@@ -70,7 +69,9 @@
             data.addColumn('number', 'Totall sum');
             var options = {
                 title: 'The sum of sales for the whole period.',
-                is3D: true
+                is3D: true,
+                width: 430,
+                height: 400,
             };
             var chart = new google.visualization.PieChart(document.getElementById('ManagersPieChartAll'));
             $.get('@Url.Action("GetChartData", "Manager")',
@@ -79,7 +80,8 @@
                     data.addRows(dataJson);
                     chart.draw(data, options);
                 });
+            
         }
+        $('#ManagerInfo').on('hide.bs.modal', function () { $("#managerDetails").html(null); });
 
-        
 </script>

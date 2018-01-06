@@ -6,12 +6,12 @@ using System.Web;
 
 namespace EpamTask5.Models
 {
-    public class Manager
+    public class Client
     {
-        [MaxLength (10)]
-        [StringLength(10)]
-        public string Name { get; set; }
-
         public int Id { get; set; }
+
+        [MaxLength(10,ErrorMessage = "Too many chars!")]
+        [StringLength(10,ErrorMessage = "Too many chars!")]
+        public string Name { get; set; }
     }
 }

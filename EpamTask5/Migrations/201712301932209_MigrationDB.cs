@@ -3,7 +3,7 @@ namespace EpamTask5.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class MigrateDb : DbMigration
+    public partial class MigrationDB : DbMigration
     {
         public override void Up()
         {
@@ -47,6 +47,19 @@ namespace EpamTask5.Migrations
                 .ForeignKey("dbo.AspNetUsers", t => t.UserId, cascadeDelete: true)
                 .Index(t => t.UserId)
                 .Index(t => t.RoleId);
+            
+            CreateTable(
+                "dbo.SaleInfoes",
+                c => new
+                    {
+                        Id = c.Int(nullable: false, identity: true),
+                        Date = c.DateTime(nullable: false),
+                        Sum = c.Decimal(nullable: false, precision: 18, scale: 2),
+                        ManagerName = c.String(),
+                        IdClient = c.Int(nullable: false),
+                        IdProduct = c.Int(nullable: false),
+                    })
+                .PrimaryKey(t => t.Id);
             
             CreateTable(
                 "dbo.AspNetUsers",
@@ -110,6 +123,7 @@ namespace EpamTask5.Migrations
             DropTable("dbo.AspNetUserLogins");
             DropTable("dbo.AspNetUserClaims");
             DropTable("dbo.AspNetUsers");
+            DropTable("dbo.SaleInfoes");
             DropTable("dbo.AspNetUserRoles");
             DropTable("dbo.AspNetRoles");
             DropTable("dbo.Products");

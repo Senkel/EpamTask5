@@ -8,14 +8,13 @@ using System.Web;
 using System.Web.Mvc;
 using EpamTask5.Models;
 using EpamTask4.Repository;
+using System.Net.Http;
 
 namespace EpamTask5.Controllers
 {
     [Authorize]
     public class ManagerController : Controller
     {
-
-
         // GET: Manager
         [HttpGet]
         public ActionResult Index()
@@ -69,12 +68,18 @@ namespace EpamTask5.Controllers
             return View(manager);
         }
 
+        [HttpGet]
+        public ActionResult Denied()
+        {
+            return View();
+        }
+
         [Ajax]
         [HttpGet]
         public ActionResult ManagerList()
         {
-            var item = new ManagerRepository().GetAll().Select(x => new Manager() { Id = x.Id, Name = x.ManagerName });
-            return PartialView("PartialManagerList", item);
+            var item = new ManagerRepository().GetAll().OrderBy(a=>a.ManagerName).Select(x => new Manager() { Id = x.Id, Name = x.ManagerName });
+            return PartialView("_PartialManagerList", item);
         }
 
         // GET: Manager/Edit/5
@@ -139,18 +144,21 @@ namespace EpamTask5.Controllers
             {
                 return HttpNotFound();
             }
+
             return View(manager);
         }
 
         // POST: Manager/Delete/5
         [HttpPost, ActionName("Delete")]
-
+       
         [Authorize(Roles = "Administrator")]
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            var item = new ManagerRepository().GetById(id).FirstOrDefault();
-            new ManagerRepository().Remove(item);
+           
+                var item = new ManagerRepository().GetById(id).FirstOrDefault();
+                new ManagerRepository().Remove(item);
+           
             return RedirectToAction("Index");
         }
 
@@ -161,11 +169,11 @@ namespace EpamTask5.Controllers
             {
                 var items = new ManagerRepository()
                     .GetAll()
-                    .Select(d => new object[]
+                    .Select(m => new object[]
                     {
-                        d.ManagerName,
+                        m.ManagerName,
                         new ManagerRepository()
-                        .GetSumById(d.Id)
+                        .GetSumById(m.Id)
                     })
                     .ToArray();
 
@@ -173,11 +181,11 @@ namespace EpamTask5.Controllers
             }
 
             int idManager = id ?? default(int);
-           
+
             var sales = new ManagerRepository()
                 .GetSalesByManagerId(idManager)
-                .OrderBy(x => x.SaleDate)
-                .GroupBy(x => x.SaleDate.Date)
+                .OrderBy(s => s.SaleDate)
+                .GroupBy(s => s.SaleDate.Date)
                 .Select(d => new object[] { d.Key, d.Sum(s => s.Sum) })
                 .ToArray();
 

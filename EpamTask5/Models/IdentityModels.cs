@@ -33,5 +33,9 @@ namespace EpamTask5.Models
         public System.Data.Entity.DbSet<EpamTask5.Models.Manager> Managers { get; set; }
 
         public System.Data.Entity.DbSet<EpamTask5.Models.Product> Products { get; set; }
+
+        public System.Data.Entity.DbSet<EpamTask5.Models.SaleInfo> SaleInfoes { get; set; }
+
+        public System.Data.Entity.DbSet<EpamTask5.Models.Client> Clients { get; set; }
     }
 }
